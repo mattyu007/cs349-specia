@@ -1,0 +1,396 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <!-- For mobile viewing -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css"/>
+
+    <style>
+        * {
+          text-align: justify;
+      }
+      .container {
+        max-width: 800px;
+        margin-bottom: 50px;
+    }
+    .img-responsive {
+        margin-top: 20px;
+        margin-bottom: 50px;
+        max-width: 90%;
+        max-height: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .due {
+        font-style: italic;
+        font-weight: bold;
+        font-size: 20px;
+        color: grey;
+    }
+    header {
+        margin-bottom: 20px;
+    }
+    h2 {
+        margin-top: 5px;
+        margin-bottom: 5px;
+        font-size: 28px;
+    }
+    p, li {
+        line-height: 30px;
+        font-size: 16px;
+    }
+    .panel > .panel-heading {
+        background-color: black;
+        color: white;
+    }
+    em {
+        font-size: 1.1em;
+        font-weight: bold;
+    }
+</style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <h1>CS349 Assignment 3</h1>
+            <span class="due">Due: July 10 (Friday), 5PM EST</span>
+            <img src="assignment_spec_images/heading.png" class="img-responsive">
+        </header>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h2>Assignment Goals</h2>
+            </div>
+            <div class="panel-body">
+                <p>
+                    The goals of this assignment are to give you an opportunity to:
+                </p>
+
+                <ul>
+                    <li>
+                        deepen the understanding of affine transforms and scene graphs,
+                    </li>
+                    <li>
+                        gain experience with HTML5 canvas,
+                    </li>
+                    <li>
+                        design and implement interactions with these techniques.
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+              <h2>Assignment Overview</h2>
+          </div>
+          <div class="panel-body">
+              <p>
+                In this assignment, you will create an interactive spaceship, <i>SPECIA</i>. Users will be able to
+                <ul>
+                  <li>position it on the screen by pressing its body and dragging with the mouse pointer,</li>
+                  <li>drive it forward by holding the up arrow key on the keyboard,</li>
+                  <li>rotate the tail clockwise/counterclockwise by pressing the left/right arrow keys on the keyboard, which will turn the whole spaceship if it is moving forward,</li>
+                  <li>trigger a power-up by pressing the space key on the keyboard, which will double its size and speed.</li>
+              </ul>
+          </p>
+          <p>
+            You will render the spaceship using an overhead view:
+        </p>
+        <img src="assignment_spec_images/specia-driving.svg" class="img-responsive">
+        <p>
+        </p>
+        <p>
+          <em>
+            You are not allowed to use any third-party JavaScript or CSS files in this assignment with the following exceptions: 
+        </em>
+        <ul>
+            <li>
+                Underscore.js is included and may be used.
+            </li>
+            <li>
+                Google Closure's affine transform module is included and may be used.
+            </li>
+        </ul>
+    </p>
+</div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h2>Interaction Design</h2>
+    </div>
+    <div class="panel-body">
+        <h3>Canvas</h3>
+        <p>
+          You will use an HTML5 canvas with a fixed size of 800 x 600 pixels. Since the canvas is not infinite, objects might move off the canvas. In these cases, they should reappear on the opposite side of the canvas.
+      </p>
+      <hr>
+      <h3>Spaceship Structure</h3>
+      <p><i>SPECIA</i> consists of a head, a body, and a tail. The head is a triangle attached to the top of the body. The body is a rectangle. On its top, there is a black rectangular resizing handle. Users could resize the length of the body with the handle. The tail is attached to the bottom of the body.  When the spaceship is driven forward, it expels mass backwards to form a string of fire at the end. </p>
+      <img src="assignment_spec_images/specia-annotated.svg" class="img-responsive">
+      <hr>
+      <h3>Staying Static</h3>
+      <p>
+        When no action is performed by the user, the spaceship stays static without expelling any fire.
+    </p>
+    <img src="assignment_spec_images/specia-static.svg" class="img-responsive">
+    <hr>
+    <h3>Driving Forward with the Up Arrow Key</h3>
+    <p>
+        The user could drive the spaceship forward by holding the up arrow key on the keyboard. You may assume the spaceship has a uniform speed while driving. It should not move very fast: the user should not feel out of control when driving it. There should be fire at the end of the spaceship in the same direction with the tail whenever the spaceship is moving forward.</p>
+        <p> In any case, moving forward means moving in the direction that the head is pointing to.
+        </p>
+        <img src="assignment_spec_images/specia-driving.svg" class="img-responsive">
+        <hr>
+        <h3>Turning Left/Right with Arrow Keys</h3>
+        <p>
+            The user could rotate the tail of the spaceship clockwise or counterclockwise by pressing the left or the right arrow key on the keyboard. This would make the space ship turn left or right if it is being driven forward.</p>
+            <p>
+                Here, we only explain how the spaceship behaves when turning right. Turning left is completely symmetric.</p>
+                <p>
+                    When the user presses the right arrow key on the keyboard, the tail of the spaceship rotates counterclockwise smoothly about the top of the triangle. 
+                </p>
+                <img src="assignment_spec_images/specia-static-turning.svg" class="img-responsive">
+                <p>
+                    The tail then forms an angle, &theta;, with the ship body. 
+                </p>
+                <img src="assignment_spec_images/specia-turning-angle.svg" class="img-responsive">
+                <p>
+                    The tail should stay that way relative to the body once the user releases the key. Only when the user presses the opposite arrow key on the keyboard will move it back.</p>
+                    <p>
+                        In addition, the user cannot rotate it more than 45 degrees in one direction. When it reaches 45 degrees, pressing the right arrow key should no longer have any effect.
+                    </p>
+                    <p>
+                        As we mentioned above, when the user drives the spaceship, it should move forward in a constant speed. If &theta; is not zero, the spaceship should simultaneously rotate about the top of the tail as a whole. The speed that the spaceship rotates should be reasonably proportional to &theta;. 
+                    </p>
+                    <img src="assignment_spec_images/specia-driving-turning.svg" class="img-responsive">
+                    <p>
+                        Pressing the left and right arrow keys at the same time will result in nothing.
+                    </p>
+                    <hr>
+                    <h3>Power Up with the Space Key</h3>
+                    <p>The spaceship could be powered up for 5 seconds by pressing the space key on the keyboard. It will not be triggered until the space key is released.</p>
+                    <p>When a power-up is triggered, everything should be twice the size now in whatever the shape it is in. When resizing, the position of the rotation reference remains unchanged.</p>
+                    <p>If it is being driven forward, the speed should also be doubled.</p> 
+                    <p>The speed of rotation should not change, if it is rotating.</p>
+                    <p>After 5 seconds, the spaceship should be returned to the normal state. </p>
+                    <img src="assignment_spec_images/specia-powered-up.svg" class="img-responsive">
+                    <hr>
+
+                    <h3>Dragging with a Mouse</h3>
+                    <p>
+                      The user could also interact with the spaceship using a mouse when it is static. When the mouse pointer is on the spaceship body (the rectangle bounded by the red dashed lines in the following image), the pointer should become a move cursor. 
+                  </p>
+                  <img src="assignment_spec_images/specia-body.svg" class="img-responsive">
+                  <p>Pressing the left mouse button and move the mouse pointer should smoothly drag the spaceship to a new position. The relative position between the spaceship and the mouse pointer should stay unchanged during the dragging. The shape of the spaceship should also not change .</p>
+                  <img src="assignment_spec_images/specia-dragging.svg" class="img-responsive">
+                  <hr>
+                  <h3>Resizing the Body Length with a Mouse</h3>
+                  <p>The user could resize the length of the spaceship body by dragging the black resizing handle. The mouse pointer should become a pointing hand when it is upon the handle. Pressing and moving the pointer towards the tail will make it smaller, and vice versa.</p>
+                  <p>The user cannot resize it while it is moving or is in a power-up.</p>
+              </p>
+              <img src="assignment_spec_images/specia-resizing.svg" class="img-responsive">
+              <hr>
+              <h3>Additional Interactions</h3>
+              <p>
+                You may add many other interactions, as long as the aforementioned requirements are not violated.
+            </p>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h2>Implementation Details and Requirements</h2>
+        </div>
+        <div class="panel-body">
+            <h3>Constructing the Spaceship Using a Scene Graph</h3>
+            <p>As mentioned above, you will represent the spaceship using an overhead view. You will use a scene graph to represent the different parts of the spaceship.</p>
+            <p>A scene graph is very similar to an interactor tree: You have a root node, child nodes, and so on. Each node's location on the screen is described relative to its parent node (with the exception of the root node).</p>
+            <p>In this assignment, you will have a root node representing the scene and background, a child representing the spaceship. The spaceship has three children representing its head, body, and tail. The body has a handle as its only child. The tail has fire as its only child. </p>
+            <img src="assignment_spec_images/scene-graph.svg" class="img-responsive">
+            <p>Each node in the scene graph maintains an affine transform that describes its location, orientation, and size, relative to its parent. This transform will be applied prior to the object painting itself, allowing the object to paint itself in it own, local coordinate system. Note that you will need to ensure that this transform is properly applied to the context prior to rendering commencing. Using this architecture, nodes will paint themselves under the following assumptions:</p>
+            <ul>
+                <li>The spaceship should paint itself so that the centre of its body's bottom is at the origin.</li>
+                <li>The body should paint itself so that the centre of its bottom is at the origin.</li>
+                <li>The head should paint itself so that the centre of its bottom is at the origin.</li>
+                <li>The tail should paint itself so that its top attaching to the body is at the origin.</li>
+                <li>The handle should paint itself so that the centre of its top is at the origin.</li>
+            </ul>
+            <p>As mentioned above, each node will maintain an affine transform relative to its parent, which will be concatenated with the current transform (and applied to the context), before the node paints.
+            </p>
+            <p>
+                These transforms merely set up the canvas for the individual parts to paint themselves. However, the individual parts may be further transformed by user interaction.
+            </p>
+            <h3>Supporting Interaction Using Affine Transforms and Scene Graphs</h3>
+            <p>
+                While affine transforms may, at first, seem difficult, once you master them, this   assignment will be
+                rather straightforward.
+            </p>
+
+            <p>
+                The key to using affine transforms in this assignment is to know that you (generally) concatenate
+                the affine transform of each node to the current transform, as you descend the scene graph.
+                Thus, you're typically saving the current context, grabbing a node's affine transform, concatenating it to the current transform,
+                rendering, and then recursively doing the same for each child. When you're done with each node,
+                you'll restore the saved context.
+            </p>
+
+            <p>
+                We write "generally" and "typically" because if you leave a scaling transform intact, it will scale every child
+                node thereafter, so you will generally not keep a scaling transform in place.
+            </p>
+
+            <p>
+                One of the most important things to keep in mind is that the affine transforms and their inverses
+                enable you to move between local and global (screen) coordinates. For example,
+                given a transform to render the spaceship to the screen, its inverse can be used to turn
+                mouse events back into the model's original coordinate system (as long as the original transform doesn't do something
+                like scale by 0).
+            </p>
+
+            <p>
+                To assist with using affine transforms,
+                we are providing an <a href="http://google.github.io/closure-library/api/class_goog_graphics_AffineTransform.html">
+                affine transform module</a> from <a href="https://github.com/google/closure-library">Google's
+                Closure library</a>. This module makes it relatively easy to create affine transforms and concatenate
+                matrices. Note, however, that you will also need to interface with the 2D context object of the HTML 5
+                canvas, so you will be working with affine transforms in two contexts: when rendering
+                using the context object, and Google's affine transforms when interpreting input. Again, this is
+                rather straightforward once you are comfortable with affine transforms.
+            </p>
+
+            <h3>Resizing the Spaceship Using Affine Transforms</h3>
+            <p>
+                The assignment requires you to support resizing the spaceship. There are several ways to implement this. The
+                one you choose will depend on how you decide to render the spaceship itself.
+            </p>
+
+            <p>
+                One way is to scale the context prior to painting the spaceship. The drawback to this approach, as noted above, is
+                that you can't keep that scaling transformation in place as you descend the scene graph and paint children,
+                because they, too, will then be scaled.
+            </p>
+
+            <p>
+                Another way to render the spaceship is to paint it using standard drawing operations. For example, you could
+                calculate the scaled dimensions of the spaceship, and fill a rectangle of that size, without applying a scaling
+                transform. In this approach, you will also need to update the bounding box.
+            </p>
+
+            <h3>
+                Hit Detection
+            </h3>
+
+            <p>
+                Hit detection is the process of determining whether the user's cursor is within a specific object
+                in the scene. The complication, of course, is that the canvas's context will undergo several
+                transforms as it descends the scene graph to paint children.
+            </p>
+
+            <p>
+                Accordingly, as covered in class, what you'll need to do for every node is perform an inverse
+                transformation of the screen coordinate to the object's local coordinate system, to see whether it
+                falls within the object. You could cache the result as a global transformation matrix in each node and recursively update a node and its descendants each time a node is changed.
+            </p>
+            <p>
+                <strong>While there are many other ways you could perform hit detection, this is the
+                method you must implement for this assignment.</strong>
+            </p>
+
+            <h3>
+                Files
+            </h3>
+
+            <ul>
+            <li>
+                <a href="specia.html">specia.html</a> is the web page for your application, with
+                <a href="js/specia.js">specia.js</a> the application's main entry point.</li>
+                <li>
+                 <a href="js/scene_graph.js">scene_graph.js</a> houses the scene graph and defines each node. </li>
+                <li>
+                <a href="js/model.js">model.js</a> instantiates the scene graph.</li>
+                <li>
+                <a href="js/view.js">view.js</a> handles user interaction, listens for changes in each node in the scene graph, and updates the canvas.
+                </li>
+            </ul>
+            
+
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h2>Assignment Constraints</h2>
+        </div>
+        <div class="panel-body">
+            <p>You must complete the assignment within the following constraints:</p>
+            <ul>
+
+                <li>You must use only HTML, JavaScript and CSS that you, yourself, have created. You can only use libraries 
+                    that we have included.
+                </li>
+
+                <li>
+                    This is a single-page web application: <em>there should be only one web page that the user loads
+                    and interacts with -- they should never leave it</em> (with the exception of the unit tests).
+                    <em>We will take off significant marks if you redirect the user to another page.</em>
+                </li>
+
+                <li>
+                    All of your JavaScript files should work with (and include) <code>'use strict';</code>.
+                </li>
+
+                <li>
+                    You must use the convention in the code of creating functions that return your classes, to
+                    create modules.
+                </li>
+
+                <li>
+                    Your assignment may not make use of any external files loaded over the Internet. It will be
+                    tested locally, in offline mode.
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h2>Marking</h2>
+        </div>
+        <div class="panel-body">
+            <p>
+                To receive a great mark, you must implement the system as described above, under the given constraints, while having an aesthetically pleasing design and a great user experience.
+            </p>
+            <p>
+                Note this assignment provides less guidance on the ultimate interface and interaction design: You may find that you need to spend more time on these aspects than in previous assignments.
+            </p>
+            <p>
+                TAs will mark your assignment using the latest version of Chrome on whatever platform they use on a daily basis. In theory, the specific platform shouldn't matter. If we find platform differences, we'll handle them as they arise. They will mark the assignment in "offline" mode (i.e., with no access to the Internet).
+            </p>
+            <p>
+            In this assignment, fewer marks will be assigned to aesthetics. You should focus on tweaking
+            the scene graph to work well with user interactions using affine transforms.
+            </p>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h2>How to Submit</h2>
+        </div>
+        <div class="panel-body">
+            <p>
+                You will use subversion to both check out and submit your assignment. Details can be found on the
+                <a href="https://hci.cs.uwaterloo.ca/courses/CS349/w15/about.html#svn">course website</a>.
+            </p>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
+
