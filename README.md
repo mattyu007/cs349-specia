@@ -12,5 +12,7 @@ Specia is a HTML5 Canvas-based interactive spaceship. The spaceship is
 represented as a scene graph using affine transformations to support
 drawing and the various interactions.
 
+View a live version [here](http://specia.matthewyu.ca).
+
 <sub>PS. You should not enable `SG_DEBUG_ACTIVATE_BODY_ROLLS` in
 `js/scene_graph.js`.</sub>
