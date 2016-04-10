@@ -1,17 +1,40 @@
 /* Put any additional CSS here */
 body {
-  background-color: #012;
-  color: #ccc;
-  font-family: 'Proxima Nova', 'Avenir Next', 'Avenir', 'Helvetica', sans-serif;
+    background-color: #012;
+    color: #ccc;
+    font-family: 'Karla', sans-serif;
+    font-size: 16px;
 }
 
 #app-container {
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 80px;
-  width: 800px;
-}
-canvas {
-  border: 1px solid white;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 80px;
+    width: 800px;
 }
 
+canvas {
+    border: 1px solid white;
+}
+
+#return-container {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    width: 300px;
+    text-align: center;
+    margin-left: -150px;
+}
+
+#return-container a {
+    color: #ccc;
+    text-decoration: none;
+}
+
+#return-container a:hover {
+    text-decoration: underline;
+}
+
+#return-container a:visited {
+    color: #ccc;
+}
